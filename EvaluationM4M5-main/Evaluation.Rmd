@@ -43,7 +43,10 @@ Vous allez travailler sur des données de reséquençage d'un génome bactérien
 ## Organisation de votre espace de travail
 
 ```{bash}
-
+# Je travaille dans mon répertoire de travail qui est associé au projet "dubii2021" sur le cluster de l'IFB.
+cd /shared/projects/dubii2021/glelandais/modules-4-5-evaluation/.
+mkdir raw-data
+cd raw-data
 ```
 
 ## Téléchargement des données brutes
@@ -51,16 +54,26 @@ Vous allez travailler sur des données de reséquençage d'un génome bactérien
 Récupérez les fichiers FASTQ issus du run **SRR10390685** grâce à l'outil <strong class="tool">sra-tools</strong> @sratoolkit
 
 ```{bash}
-
+# Comme je vais utiliser les outils en dehors d'un script,
+# il me semble que cette commande est importante.
+salloc --cpus-per-task=10 --mem=1G
+# Chargement du module
+module load sra-tools
+# Lancement du téléchargement
+srun fasterq-dump -p --split-files SRR10390685
+# Deux fichiers FASTQ ont été obtenus
 ```
 
 Combien de reads sont présents dans les fichiers R1 et R2 ?
 
 ```{bash}
-
+# Le nombre de reads est égal au nombre de lignes divisé 
+# par 4 (un read comporte 4 lignes)
+grep -c "^@" SRR10390685_1.fastq
+grep -c "^@" SRR10390685_2.fastq
 ```
 
-Les fichiers FASTQ contiennent <code></code> reads.
+Les fichiers FASTQ contiennent <code>7066055</code> reads.
 
 Téléchargez le génome de référence de la souche ASM904v1 de _Bacillus subtilis_ disponible à [cette adresse](https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/009/045/GCF_000009045.1_ASM904v1/GCF_000009045.1_ASM904v1_genomic.fna.gz)
 
