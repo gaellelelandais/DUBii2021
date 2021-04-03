@@ -140,19 +140,19 @@ La qualité des bases vous paraît-elle satisfaisante ? Pourquoi ?
 
 car <code>les valeurs de score qualité sont élevées (> Q30)</code> comme le montre <code>le graphique "Per base sequence quality"</code>
 
-Lien vers le [rapport MulitQC]()
+Lien vers le [rapport MulitQC](https://github.com/gaellelelandais/DUBii2021/blob/master/multiqc_report.html)
 
 Est-ce que les reads déposés ont subi une étape de nettoyage avant d'être déposés ? Pourquoi ?
 
-- [ ] Oui
+- [x] Oui
 - [ ] Non
 
-car <code></code>
+car <code>tous les reads n'ont pas la même longueur</code>
 
 Quelle est la profondeur de séquençage (calculée par rapport à la taille du génome de référence) ?
 
 ```{bash}
-
+# A terminer.
 ```
 
 La profondeur de séquençage est de : <code></code> X.
