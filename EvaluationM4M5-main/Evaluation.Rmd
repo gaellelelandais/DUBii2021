@@ -46,7 +46,7 @@ Vous allez travailler sur des données de reséquençage d'un génome bactérien
 # Je travaille dans mon répertoire de travail qui est associé au projet "dubii2021" sur le cluster de l'IFB.
 cd /shared/projects/dubii2021/glelandais/modules-4-5-evaluation/.
 mkdir raw-data
-cd raw-data
+mkdir quality-controls
 ```
 
 ## Téléchargement des données brutes
@@ -54,6 +54,7 @@ cd raw-data
 Récupérez les fichiers FASTQ issus du run **SRR10390685** grâce à l'outil <strong class="tool">sra-tools</strong> @sratoolkit
 
 ```{bash}
+cd raw-data
 # Comme je vais utiliser les outils en dehors d'un script,
 # il me semble que cette commande est importante.
 salloc --cpus-per-task=10 --mem=1G
@@ -78,46 +79,66 @@ Les fichiers FASTQ contiennent <code>7066055</code> reads.
 Téléchargez le génome de référence de la souche ASM904v1 de _Bacillus subtilis_ disponible à [cette adresse](https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/009/045/GCF_000009045.1_ASM904v1/GCF_000009045.1_ASM904v1_genomic.fna.gz)
 
 ```{bash}
-
+wget https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/009/045/GCF_000009045.1_ASM904v1/GCF_000009045.1_ASM904v1_genomic.fna.gz
 ```
 
 Quelle est la taille de ce génome ?
 
 ```{bash}
+# Décompression du féichier génome
+gunzip GCF_000009045.1_ASM904v1_genomic.fna.gz
+# Décompte du nombre de base
+cat GCF_000009045.1_ASM904v1_genomic.fna | grep -v "NC_" | tr --delete "\n" | wc -c
 
+# Note : J'ai trouvé de l'aide ici :
+# https://dridk.me/genome_chiffre_1.html
 ```
 
-La taille de ce génome est de <code></code> paires de bases.
+La taille de ce génome est de <code>4215606</code> paires de bases.
 
 Téléchargez l'annotation de la souche ASM904v1 de _Bacillus subtilis_ disponible à [cette adresse](https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/009/045/GCF_000009045.1_ASM904v1/GCF_000009045.1_ASM904v1_genomic.gff.gz)
 
 ```{bash}
-
+# Téléchargement
+wget https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/009/045/GCF_000009045.1_ASM904v1/GCF_000009045.1_ASM904v1_genomic.gff.gz
+# Décompression du fichier
+gunzip GCF_000009045.1_ASM904v1_genomic.gff.gz
 ```
 
 Combien de gènes sont connus pour ce génome ?
 
 ```{bash}
-
+# Récupération de la troisième colonne du fichier et
+# dénombrement des occurences de gene
+cut -f 3 GCF_000009045.1_ASM904v1_genomic.gff | grep -c gene
 ```
 
-<code></code> gènes sont recensés dans le fichier d'annotation.
+<code>4536</code> gènes sont recensés dans le fichier d'annotation.
 
 ## Contrôle qualité
 
 Lancez l'outil <strong class="tool">fastqc</strong> @fastqc dédié à l'analyse de la qualité des bases issues d'un séquençage haut-débit
 
 ```{bash}
-
+# Changement de répertoire de travail
+cd ../quality-controls
+# Chargement du module fastqc
+module load fastqc
+# Lancement des analyses qualités
+srun fastqc ../raw-data/SRR10390685_1.fastq -o .
+srun fastqc ../raw-data/SRR10390685_2.fastq -o .
+# Rapport MultiQC
+module load multiqc
+srun multiqc -d . -o .
 ```
 
 La qualité des bases vous paraît-elle satisfaisante ? Pourquoi ?
 
-- [ ] Oui
+- [x] Oui
 - [ ] Non
 
 
-car <code> </code> comme le montre <code> </code>
+car <code>les valeurs de score qualité sont élevées (> Q30)</code> comme le montre <code>le graphique "Per base sequence quality"</code>
 
 Lien vers le [rapport MulitQC]()
 

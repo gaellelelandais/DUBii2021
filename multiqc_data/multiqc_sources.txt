@@ -1,0 +1,3 @@
+Module	Section	Sample Name	Source
+FastQC	all_sections	SRR10390685_2	/shared/ifbstor1/projects/dubii2021/glelandais/modules-4-5-evaluation/quality-controls/SRR10390685_2_fastqc.zip
+FastQC	all_sections	SRR10390685_1	/shared/ifbstor1/projects/dubii2021/glelandais/modules-4-5-evaluation/quality-controls/SRR10390685_1_fastqc.zip
