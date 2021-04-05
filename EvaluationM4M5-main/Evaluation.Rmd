@@ -45,8 +45,11 @@ Vous allez travailler sur des données de reséquençage d'un génome bactérien
 ```{bash}
 # Je travaille dans mon répertoire de travail qui est associé au projet "dubii2021" sur le cluster de l'IFB.
 cd /shared/projects/dubii2021/glelandais/modules-4-5-evaluation/.
+# Création de répertoires pour organiser les fichiers.
 mkdir raw-data
 mkdir quality-controls
+mkdir clean-data
+mkdir mapping
 ```
 
 ## Téléchargement des données brutes
@@ -152,17 +155,26 @@ car <code>tous les reads n'ont pas la même longueur</code>
 Quelle est la profondeur de séquençage (calculée par rapport à la taille du génome de référence) ?
 
 ```{bash}
-# A terminer.
+# Utilisation de la formule du cours :
+# N*L/G ; avec N = Nombre de lectures, L = Longueur des lectures et G = Taille du génome 
+# ((7066055 * 2) * 151) / 4215606 = 506.2021  
 ```
 
-La profondeur de séquençage est de : <code></code> X.
+La profondeur de séquençage est de : <code>500</code> X.
 
 ## Nettoyage des reads
 
 Vous voulez maintenant nettoyer un peu vos lectures. Choisissez les paramètres de <strong class="tool">fastp</strong> @fastp qui vous semblent adéquats et justifiez-les.
 
 ```{bash}
-
+# Changement du répertoire de travail
+cd ../clean-data
+# Chargement du logiciel fastp
+module load fastp
+# Ressources sur le cluster
+salloc --cpus-per-task=10 --mem=5G
+# Lancement de fastp
+srun fastp --in1 ../raw-data/SRR10390685_1.fastq --in2 ../raw-data/SRR10390685_2.fastq --out1 ./SRR10390685_1_clean.fastq --out2 ./SRR10390685_2_clean.fastq --html ./fastp.html --cut_mean_quality 30 --cut_window_size 8 --length_required 100 --cut_tail --json ./fastp.json
 ```
 
 Les paramètres suivants ont été choisis : 
@@ -170,18 +182,26 @@ Les paramètres suivants ont été choisis :
 
 |Parametre | Valeur | Explication |
 |----------|--------|-------------|
-|  |  |  |
+| cut_mean_quality |30  |Valeur utilisée lors de la séance de TP  |
+| cut_window_size |8  |Valeur utilisée lors de la séance de TP  |
+| length_required |100  |Valeur utilisée lors de la séance de TP  |
+| cut_tail |  |Utilisée lors de la séance de TP |
 
-
-
-Ces paramètres ont permis de conserver <code></code> reads pairés, soit une perte de <code></code>% des reads bruts.
+Ces paramètres ont permis de conserver <code>13.554096 M</code> reads pairés, soit une perte de <code>4.1</code>% des reads bruts.
 
 ## Alignement des reads sur le génome de référence
 
 Maintenant, vous allez aligner ces reads nettoyés sur le génome de référence à l'aide de <strong class="tool">bwa</strong> @bwa et <strong class="tool">samtools</strong> @samtools.
 
 ```{bash}
-
+# Changement de répertoire
+cd ../mapping/
+# Lancement de BWA
+module load bwa
+# Création des index
+srun bwa index ../raw-data/GCF_000009045.1_ASM904v1_genomic.fna
+# Lancement du programme
+srun bwa mem ../raw-data/GCF_000009045.1_ASM904v1_genomic.fna ../clean-data/SRR10390685_1_clean.fastq ../clean-data/SRR10390685_2_clean.fastq > SRR10390685.sam
 ```
 
 Combien de reads ne sont pas mappés ?
