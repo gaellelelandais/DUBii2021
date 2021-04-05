@@ -202,16 +202,24 @@ module load bwa
 srun bwa index ../raw-data/GCF_000009045.1_ASM904v1_genomic.fna
 # Lancement du programme
 srun bwa mem ../raw-data/GCF_000009045.1_ASM904v1_genomic.fna ../clean-data/SRR10390685_1_clean.fastq ../clean-data/SRR10390685_2_clean.fastq > SRR10390685.sam
+# Utilisation de samtools
+module load samtools
+srun samtools view SRR10390685.sam -b > SRR10390685.bam
+srun samtools sort SRR10390685.bam -o SRR10390685.sort.bam
+srun samtools index SRR10390685.sort.bam
+# Suppression des fichiers inutiles
+rm -f SRR10390685.sam SRR10390685.bam
 ```
 
 Combien de reads ne sont pas mappés ?
 
 ```{bash}
-
+# Statistiques en relation avec l'alignement
+srun samtools idxstats SRR10390685.sort.bam > SRR10390685.sort.bam.idxstats
+srun samtools flagstat SRR10390685.sort.bam > SRR10390685.sort.bam.flagstat
 ```
 
-
-<code></code> reads ne sont pas mappés.
+<code>40266</code> reads ne sont pas mappés.
 
 ## Croisement de données
 
