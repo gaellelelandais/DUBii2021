@@ -254,4 +254,6 @@ srun samtools idxstats SRR10390685_on_trmNF.sort.bam > SRR10390685_on_trmNF.sort
 
 Utilisez <strong class="tool">IGV</strong> @igv sous [sa version en ligne](https://igv.org/app/) pour visualiser les alignements sur le gène. Faites une capture d'écran du gène entier.
 
+![Image finale](./Final_result_trmNF.png)
+
 # References
