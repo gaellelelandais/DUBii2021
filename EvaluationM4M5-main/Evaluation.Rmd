@@ -1,6 +1,6 @@
 ---
 title: "Examen final Modules 4 et 5"
-author: "Olivier Rué - Valentin Loux"
+author: ""
 subtitle: "DUBii 2021"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 bibliography: resources/biblio.bib 
