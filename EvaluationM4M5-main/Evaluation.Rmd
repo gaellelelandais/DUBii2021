@@ -226,10 +226,28 @@ srun samtools flagstat SRR10390685.sort.bam > SRR10390685.sort.bam.flagstat
 Calculez le nombre de reads qui chevauchent avec au moins 50% de leur longueur le gène _trmNF_ grâce à l'outil <strong class="tool">bedtools</strong> @bedtools:
 
 ```{bash}
+# Recherche des lignes qui concerne le gène d'intérêt
+grep trmNF ../raw-data/GCF_000009045.1_ASM904v1_genomic.gff | awk '$3=="gene"' > trmNF_gene.gff3
 
+# Utilisation de bedtools
+module load bedtools
+
+# Allocation de ressources sur le cluster
+salloc --cpus-per-task=10 --mem=1G
+
+# Sélection des reads alignés sur le gène d'intérêt
+srun bedtools intersect -a SRR10390685.sort.bam -b trmNF_gene.gff3 -sorted > SRR10390685_on_trmNF.bam
+
+# Tri et indexage des reads
+srun samtools sort SRR10390685_on_trmNF.bam -o SRR10390685_on_trmNF.sort.bam
+srun samtools index SRR10390685_on_trmNF.sort.bam
+# Nombre de reads présent dans le fichier résultat
+srun samtools idxstats SRR10390685_on_trmNF.sort.bam > SRR10390685_on_trmNF.sort.bam.idxstats
+
+# --> Je pense qu'il existe une solution plus simple. A revoir si possible.
 ```
 
-<code> </code> reads chevauchent le gène d'intérêt.
+<code>3394</code> reads chevauchent le gène d'intérêt.
 
 
 ## Visualisation
