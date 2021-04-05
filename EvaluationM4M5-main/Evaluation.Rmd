@@ -1,6 +1,6 @@
 ---
 title: "Examen final Modules 4 et 5"
-author: ""
+author: "Modifié par Gaëlle Lelandais"
 subtitle: "DUBii 2021"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 bibliography: resources/biblio.bib 
@@ -187,7 +187,7 @@ Les paramètres suivants ont été choisis :
 | length_required |100  |Valeur utilisée lors de la séance de TP  |
 | cut_tail |  |Utilisée lors de la séance de TP |
 
-Ces paramètres ont permis de conserver <code>13.554096 M</code> reads pairés, soit une perte de <code>4.1</code>% des reads bruts.
+Ces paramètres ont permis de conserver <code>6777048</code> reads pairés, soit une perte de <code>4.1</code>% des reads bruts.
 
 ## Alignement des reads sur le génome de référence
 
