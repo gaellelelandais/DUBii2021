@@ -1,6 +1,6 @@
 ---
 title: "Examen final Modules 4 et 5"
-author: "Rédigé par les formateurs des modules 3 et 5 et modifié par Gaëlle Lelandais"
+author: "Template rédigé par les formateurs des modules 4 et 5 et modifié par Gaëlle Lelandais"
 subtitle: "DUBii 2021"
 date: "`r format(Sys.time(), '%d %B, %Y')`"
 bibliography: resources/biblio.bib 
@@ -190,10 +190,10 @@ Les paramètres suivants ont été choisis :
 
 |Parametre | Valeur | Explication |
 |----------|--------|-------------|
-| cut_mean_quality |30  |Valeur utilisée lors de la séance de TP  |
-| cut_window_size |8  |Valeur utilisée lors de la séance de TP  |
-| length_required |100  |Valeur utilisée lors de la séance de TP  |
-| cut_tail |  |Utilisée lors de la séance de TP |
+| cut_mean_quality |30  |Valeur utilisée lors de la séance de TP. En dessus de cette valeur (30) la probabilité d'erreur pour une base est  inférieure à 1/1000, ce seuil est classiquement utilisé.|
+| cut_window_size |8  |Valeur utilisée lors de la séance de TP. Elle indique le nombre de bases utilisées pour calculer une qualité moyenne. Cette valeur ne doit être ni trop faible, ni trop élevée.|
+| length_required |100  |Valeur utilisée lors de la séance de TP. Les lectures qui seraient plus petites que cette taille sont éliminées.|
+| cut_tail |  |Utilisée lors de la séance de TP. La qualité des lectures est contrôlée égaklement du coté 3'.|
 
 Ces paramètres ont permis de conserver <code>6777048</code> reads pairés, soit une perte de <code>4.1</code>% des reads bruts.
 
@@ -227,9 +227,32 @@ Combien de reads ne sont pas mappés ?
 # Statistiques en relation avec les résultats de l'alignement.
 srun samtools idxstats SRR10390685.sort.bam > SRR10390685.sort.bam.idxstats
 srun samtools flagstat SRR10390685.sort.bam > SRR10390685.sort.bam.flagstat
+
+# Affichage du contenu du fichier "flagstats"
+less SRR10390685.sort.bam.flagstat
+
+#13571369 + 0 in total (QC-passed reads + QC-failed reads)
+#0 + 0 secondary
+#17273 + 0 supplementary
+#0 + 0 duplicates
+#12826829 + 0 mapped (94.51% : N/A)
+#13554096 + 0 paired in sequencing
+#6777048 + 0 read1
+#6777048 + 0 read2
+#12746440 + 0 properly paired (94.04% : N/A)
+#12769290 + 0 with itself and mate mapped
+#40266 + 0 singletons (0.30% : N/A)
+#0 + 0 with mate mapped to a different chr
+#0 + 0 with mate mapped to a different chr (mapQ>=5)
+
+# Le nombre de lectures non alignées est :
+# 13571369 - 12826829 - 40266 = 704274  
+
+# Note : J'ai trouvé de l'aide ici :
+# http://onetipperday.sterding.com/2020/11/explaination-of-samtools-flagstat-output.html
 ```
 
-<code>40266</code> reads ne sont pas mappés.
+<code>704274</code> reads ne sont pas mappés.
 
 ## Croisement de données
 
@@ -255,15 +278,25 @@ srun samtools sort SRR10390685_on_trmNF.bam -o SRR10390685_on_trmNF.sort.bam
 srun samtools index SRR10390685_on_trmNF.sort.bam
 # Nombre de reads présent dans le fichier résultat
 srun samtools idxstats SRR10390685_on_trmNF.sort.bam > SRR10390685_on_trmNF.sort.bam.idxstats
+
+# La solution précédente donne tous les reads qui chevauchent le gène d'intérêt. La condition 50% peut être ajoutée avec 
+# l'argument '-f 0.5'
+srun bedtools intersect -a SRR10390685.sort.bam -b trmNF_gene.gff3 -sorted -f 0.5 > SRR10390685_on_trmNF_v2.bam
+# Les autres traitements de données sont ensuite reproduits
+srun samtools sort SRR10390685_on_trmNF_v2.bam -o SRR10390685_on_trmNF_v2.sort.bam
+srun samtools index SRR10390685_on_trmNF_v2.sort.bam
+# Nombre de reads présent dans le fichier résultat
+srun samtools idxstats SRR10390685_on_trmNF_v2.sort.bam > SRR10390685_on_trmNF_v2.sort.bam.idxstats
+less SRR10390685_on_trmNF_v2.sort.bam.idxstats
 ```
 
-<code>3394</code> reads chevauchent le gène d'intérêt.
+<code>2801</code> reads chevauchent le gène d'intérêt.
 
 
 ## Visualisation
 
 Utilisez <strong class="tool">IGV</strong> @igv sous [sa version en ligne](https://igv.org/app/) pour visualiser les alignements sur le gène. Faites une capture d'écran du gène entier.
 
-![Image finale](./Final_result_trmNF.png)
+![Image finale](./Final_result_trmNF_v2.png)
 
 # References
