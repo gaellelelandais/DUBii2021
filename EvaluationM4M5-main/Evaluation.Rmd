@@ -118,9 +118,12 @@ Combien de gènes sont connus pour ce génome ?
 # J'écris une commande Bash qui permet d'extraire la troisième colonne du fichier et
 # de compter des occurences du mot "gene".
 cut -f 3 GCF_000009045.1_ASM904v1_genomic.gff | grep -c gene
+# Remarque (après le rendu du projet) :
+# --> Attention, après comparaison des résultats avec les autres stagiaires, je comprends que cette commande récupère aussi
+# les "pseudogenes". Ainsi il aurait été préférable (pour avoir la bonne réponse), d'utiliser la commande awk incluant $3=="gene".
 ```
 
-<code>4536</code> gènes sont recensés dans le fichier d'annotation.
+<code>4536 (incluant 88 pseudogenes)</code> gènes sont recensés dans le fichier d'annotation.
 
 ## Contrôle qualité
 
